@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('time_records', function (Blueprint $table) {
             $table->id();
             $table->uuid('unique_record')->unique();
+            $table->foreignId('employee_id')->constrained('employees', 'id');
             $table->timestamp('recorded_at');
 
-            $table->foreignId('employee_id')->constrained('employees', 'id');
         });
     }
 

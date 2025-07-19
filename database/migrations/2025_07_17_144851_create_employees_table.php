@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->uuid('unique_employee')->unique();
+            $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('type_id')->constrained('types_employees', 'id');
+            $table->bigInteger('created_by')->nullable();
             $table->string('nome', 100);
             $table->string('cpf', 11)->unique();
             $table->string('email')->unique();
@@ -27,9 +30,6 @@ return new class extends Migration
             $table->string('status')->default('ativo');
             $table->timestamps();
             
-            $table->foreignId('user_id')->constrained('users', 'id');
-            $table->foreignId('created_by')->constrained('users', 'id');
-            $table->foreignId('type_id')->constrained('types_employees', 'id');
         });
     }
 
