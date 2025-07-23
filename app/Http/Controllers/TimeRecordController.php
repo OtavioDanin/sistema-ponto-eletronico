@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\TimeRecordDTO;
+use App\Helpers\UniqueIdentifierInterface;
 use App\Models\Employee;
 use App\Models\TimeRecord;
+use App\Services\TimeRecordServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Throwable;
 
 class TimeRecordController extends Controller
 {
+    public function __construct(
+        protected TimeRecordServiceInterface $timeRecordService,
+        protected TimeRecordDTO $timeRecordDTO,
+        protected UniqueIdentifierInterface $unique,
+    ) {}
+
     // Método para o Admin visualizar e filtrar os pontos
     public function index(Request $request)
     {
@@ -42,13 +51,18 @@ class TimeRecordController extends Controller
 
     public function store(Request $request)
     {
-        $employee_id = $request->all('idEmployee');
-        TimeRecord::create([
-            'unique_record' => Str::uuid(),
-            'employee_id' => $employee_id['idEmployee'],
-            'recorded_at' => now(),
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Ponto registrado com sucesso!');
+        try {
+            $data = $this->timeRecordDTO::from(
+                [
+                    'unique_record' => $this->unique->generate(),
+                    'employee_id' => $request->idEmployee,
+                    'recorded_at' => now('America/Sao_Paulo'),
+                ]
+            )->all();
+            $this->timeRecordService->create($data);
+            return redirect()->route('dashboard')->with('success', 'Ponto registrado com sucesso!');
+        } catch (Throwable $thEx) {
+            return redirect()->route('dashboard')->with('error', 'Falha no registro do Ponto registrado!');
+        }
     }
 }
