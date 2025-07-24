@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\TimeRecord;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class TimeRecordRepository implements TimeRecordRepositoryInterface
@@ -22,5 +23,10 @@ class TimeRecordRepository implements TimeRecordRepositoryInterface
             ->where("employee_id", $idEmployee)
             ->orderBy('id', 'DESC')
             ->get();
+    }
+
+    public function getTimeRecordEmployee(): Builder
+    {
+        return $this->timeRecord::with('employee')->latest('recorded_at');
     }
 }

@@ -8,4 +8,5 @@ interface TimeRecordServiceInterface
 {
     public function create(array $dataTimeRecord);
     public function getDataByIdEmployee(string $idEmployee);
+    public function getTimeRecordEmployee(array $data);
 }

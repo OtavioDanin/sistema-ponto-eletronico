@@ -15,4 +15,9 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     {
         return $this->employee->select('id', 'type_id')->where('user_id', $idUser)->get();
     }
+
+    public function getDataEmployeeOrderByName(): Collection
+    {
+        return $this->employee->select('id', 'nome')->orderBy('nome')->get();
+    }
 }

@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\EmployeeException;
 use App\Repositories\EmployeeRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class EmployeeService implements EmployeeServiceInterface
 {
@@ -21,5 +22,10 @@ class EmployeeService implements EmployeeServiceInterface
             throw new EmployeeException('Tipo de Funcionário não encontrado', 404);
         }
         return $type[0];
+    }
+
+    public function getDataEmployeeOrderByName(): Collection
+    {
+        return $this->employeeRepository->getDataEmployeeOrderByName();
     }
 }

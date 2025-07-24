@@ -8,4 +8,5 @@ interface TimeRecordRepositoryInterface
 {
     public function getDataByIdEmployee(string $idEmployee);
     public function save(array $dataTimeRecord);
+    public function getTimeRecordEmployee();
 }

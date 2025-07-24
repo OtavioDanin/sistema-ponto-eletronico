@@ -7,4 +7,5 @@ namespace App\Repositories;
 interface EmployeeRepositoryInterface
 {
     public function searchTypeIdByIdUser(string $id);
+    public function getDataEmployeeOrderByName();
 }

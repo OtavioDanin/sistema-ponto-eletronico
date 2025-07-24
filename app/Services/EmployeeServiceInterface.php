@@ -7,4 +7,5 @@ namespace App\Services;
 interface EmployeeServiceInterface
 {
     public function getDataEmployeeIdByIdUser(string $id);
+    public function getDataEmployeeOrderByName();
 }
