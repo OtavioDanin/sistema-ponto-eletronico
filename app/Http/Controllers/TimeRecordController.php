@@ -29,7 +29,7 @@ class TimeRecordController extends Controller
     {
         try{
             if(!$this->authUser->isUserAdmin()){
-                throw new TimeRecordException('Somente perfil de Administrador pode visualizar os registros.');
+                throw new TimeRecordException('Somente perfil de Administrador pode visualizar os registros.', 403);
             }
             $data = $this->timeRecordInputDTO::from($request->all())->all();
             $timeRecords = $this->timeRecordService->getTimeRecordEmployee($data);
