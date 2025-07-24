@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\DTO\TimeRecordDTO;
 use App\DTO\TimeRecordInputDTO;
+use App\Exceptions\TimeRecordException;
+use App\Helpers\AuthUserInterface;
 use App\Helpers\UniqueIdentifierInterface;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TimeRecordServiceInterface;
@@ -20,11 +22,15 @@ class TimeRecordController extends Controller
         protected TimeRecordInputDTO $timeRecordInputDTO,
         protected TimeRecordDTO $timeRecordDTO,
         protected UniqueIdentifierInterface $unique,
+        protected AuthUserInterface $authUser,
     ) {}
 
     public function index(Request $request)
     {
         try{
+            if(!$this->authUser->isUserAdmin()){
+                throw new TimeRecordException('Somente perfil de Administrador pode visualizar os registros.');
+            }
             $data = $this->timeRecordInputDTO::from($request->all())->all();
             $timeRecords = $this->timeRecordService->getTimeRecordEmployee($data);
             $employees = $this->employeeService->getDataEmployeeOrderByName();
@@ -36,6 +42,9 @@ class TimeRecordController extends Controller
     public function store(Request $request)
     {
         try {
+            $request->validate([
+                'idEmployee' => 'required|numeric|min:1'
+            ]);
             $data = $this->timeRecordDTO::from(
                 [
                     'unique_record' => $this->unique->generate(),

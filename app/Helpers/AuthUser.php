@@ -10,7 +10,7 @@ class AuthUser implements AuthUserInterface
 {
     const ADMIN_TYPE_ID = 1;
 
-    public function checkUserAdmin(): bool
+    public function isUserAdmin(): bool
     {
         $type_id = Auth::user()?->employees?->toArray()[0]['type_id'];
         if ($type_id !== self::ADMIN_TYPE_ID) {

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Helpers\AuthUser;
+use App\Helpers\AuthUserInterface;
 use App\Helpers\UniqueIdentifier;
 use App\Helpers\UniqueIdentifierInterface;
 use App\Repositories\EmployeeRepository;
@@ -21,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(AuthUserInterface::class, AuthUser::class);
+
         $this->app->bind(TimeRecordRepositoryInterface::class, TimeRecordRepository::class);
         $this->app->bind(TimeRecordServiceInterface::class, TimeRecordService::class);
         $this->app->bind(UniqueIdentifierInterface::class, UniqueIdentifier::class);

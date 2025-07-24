@@ -19,7 +19,6 @@ class EmployeeMiddleware
         if (Auth::check() && Auth::user()->employees) {
             return $next($request);
         }
-
         return redirect()->route('dashboard')
             ->with('error', 'Acesso permitido apenas para funcionários cadastrados.');
     }

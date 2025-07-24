@@ -6,5 +6,6 @@ namespace App\Helpers;
 
 interface AuthUserInterface
 {
-    public function checkUserAdmin();
+    public function isUserAdmin(): bool;
+    public function getIdUser(): ?int;
 }
