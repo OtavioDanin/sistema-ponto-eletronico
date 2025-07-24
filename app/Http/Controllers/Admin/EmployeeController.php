@@ -6,28 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\TypeEmployee;
 use App\Models\User;
+use App\Services\EmployeeServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct(protected EmployeeServiceInterface $employeeService) {}
+
     public function index()
     {
-        $employees = Employee::with('types')->where("type_id", "2")->get();
-        return view('admin.employees.index', compact('employees'));
+        try {
+            $employees = $this->employeeService->getAll();
+            return view('admin.employees.index', compact('employees'));
+        } catch (Throwable $thEx) {
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $types = TypeEmployee::all();

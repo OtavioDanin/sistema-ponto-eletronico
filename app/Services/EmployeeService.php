@@ -28,4 +28,9 @@ class EmployeeService implements EmployeeServiceInterface
     {
         return $this->employeeRepository->getDataEmployeeOrderByName();
     }
+
+    public function getAll(): Collection
+    {
+        return $this->employeeRepository->getAll();
+    }
 }

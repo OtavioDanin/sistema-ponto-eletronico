@@ -20,4 +20,11 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     {
         return $this->employee->select('id', 'nome')->orderBy('nome')->get();
     }
+
+    public function getAll(): Collection
+    {
+        return $this->employee
+            ->select('employees.id','employees.nome', 'employees.cargo', 'employees.status')
+            ->get();
+    }
 }
