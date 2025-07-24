@@ -18,7 +18,7 @@ class EmployeeService implements EmployeeServiceInterface
             throw new EmployeeException('Usuário não encontrado', 404);
         }
         $type =  $this->employeeRepository->searchTypeIdByIdUser($idUser)->toArray();
-        if(empty($type)) {
+        if (empty($type)) {
             throw new EmployeeException('Tipo de Funcionário não encontrado', 404);
         }
         return $type[0];

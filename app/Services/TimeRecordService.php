@@ -12,7 +12,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TimeRecordService implements TimeRecordServiceInterface
 {
-    public function __construct(protected TimeRecordRepositoryInterface $timeRecordRepository) {}
+    public function __construct(
+        protected TimeRecordRepositoryInterface $timeRecordRepository,
+        ) {}
 
     public function create(array $dataTimeRecord): void
     {
