@@ -2,25 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Helpers\AuthUser;
+use App\Services\EmployeeServiceInterface;
+use App\Services\TimeRecordServiceInterface;
+use Throwable;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        protected EmployeeServiceInterface $employeeService,
+        protected AuthUser $auth,
+        protected TimeRecordServiceInterface $timeRecordService,
+    ) {}
+
     public function index()
     {
-        $user = Auth::user();
-        $employee = $user->employees();
-        $employeeArray = $employee->select('id', 'type_id')->get()->toArray();
-        if ($employeeArray[0]['type_id'] === 1) {
-            return redirect()->route('admin.employees.index');
+        try {
+            $data = $this->getDataEmployee();
+            return $this->loadEmployee($data);
+        } catch (Throwable $thEx) {
+            dd($thEx->getMessage());
         }
+    }
 
-        $timeRecords = $employee->select("employees.id", "recorded_at")
-            ->join("time_records", 'employees.id', '=', 'time_records.employee_id')
-            ->where("time_records.employee_id", $employeeArray[0]['id'])
-            ->orderBy('time_records.id', 'DESC')
-            ->get();
-        $idEmployee = ['idEmployee' => $employeeArray[0]['id']];
+    public function loadEmployee(array $data)
+    {
+        if ($data['type_id'] === 1) {
+            return $this->loadAdmin();
+        }
+        return $this->loadEmployeeCommon($data);
+    }
+
+    public function loadAdmin()
+    {
+        return redirect()->route('admin.employees.index');
+    }
+
+    public function loadEmployeeCommon(array $data)
+    {
+        $timeRecords = $this->getDataTimeRecord($data['id']);
+        $idEmployee = ['idEmployee' => $data['id']];
         return view('dashboard', compact('timeRecords', 'idEmployee'));
+    }
+
+    public function getDataEmployee(): array
+    {
+        $idUser = $this->auth->getIdUser();
+        return $this->employeeService->getDataEmployeeIdByIdUser($idUser);
+    }
+
+    public function getDataTimeRecord(string $idEmployee)
+    {
+        return $this->timeRecordService->getDataByIdEmployee($idEmployee);
     }
 }

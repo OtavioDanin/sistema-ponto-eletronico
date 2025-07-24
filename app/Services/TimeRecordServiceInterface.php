@@ -7,4 +7,5 @@ namespace App\Services;
 interface TimeRecordServiceInterface
 {
     public function create(array $dataTimeRecord);
+    public function getDataByIdEmployee(string $idEmployee);
 }

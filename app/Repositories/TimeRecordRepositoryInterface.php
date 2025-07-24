@@ -6,5 +6,6 @@ namespace App\Repositories;
 
 interface TimeRecordRepositoryInterface
 {
+    public function getDataByIdEmployee(string $idEmployee);
     public function save(array $dataTimeRecord);
 }

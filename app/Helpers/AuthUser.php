@@ -18,4 +18,10 @@ class AuthUser implements AuthUserInterface
         }
         return true;
     }
+
+    public function getIdUser(): ?int
+    {
+        $user = Auth::user();
+        return $user->getAuthIdentifier();
+    }
 }
