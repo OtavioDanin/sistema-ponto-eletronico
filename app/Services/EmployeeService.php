@@ -45,23 +45,22 @@ class EmployeeService implements EmployeeServiceInterface
         return $this->employeeRepository->getAll();
     }
 
-    public function save(object $data)
+    public function save(array $data)
     {
         if (empty($data)) {
             throw new EmployeeException('Dados vazios para cadsatro!', 400);
         }
         DB::transaction(function () use ($data) {
             $dataUser = [
-                'name' => $data->nome,
-                'email' => $data->email,
-                'password' => Hash::make($data->senha),
+                'name' => $data['nome'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['senha']),
             ];
             $user = $this->userRepository->persist($dataUser);
-            // dd($user->id);
-            $data->user_id = $user->id;
-            $data->created_by = $this->auth->getIdUser();
-            $data->unique_employee = $this->unique->generate();
-            $this->employeeRepository->persist((array)$data);
+            $data['user_id'] = $user->id;
+            $data['created_by'] = $this->auth->getIdUser();
+            $data['unique_employee'] = $this->unique->generate();
+            $this->employeeRepository->persist($data);
         });
     }
 }

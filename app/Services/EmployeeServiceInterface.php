@@ -9,5 +9,5 @@ interface EmployeeServiceInterface
     public function getDataEmployeeIdByIdUser(string $id);
     public function getDataEmployeeOrderByName();
     public function getAll();
-    public function save(object $data);
+    public function save(array $data);
 }

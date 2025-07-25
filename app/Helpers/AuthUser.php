@@ -24,10 +24,4 @@ class AuthUser implements AuthUserInterface
         $user = Auth::user();
         return $user->getAuthIdentifier();
     }
-
-    public function getIdUserAdmin()
-    {
-        $adminEmployee = Auth::user()->employees;
-        return $adminEmployee->toArray()[0]['id'];
-    }
 }

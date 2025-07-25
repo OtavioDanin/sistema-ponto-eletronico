@@ -8,5 +8,4 @@ interface AuthUserInterface
 {
     public function isUserAdmin(): bool;
     public function getIdUser(): ?int;
-    public function getIdUserAdmin();
 }

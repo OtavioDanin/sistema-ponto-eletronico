@@ -56,7 +56,7 @@ class EmployeeController extends Controller
                 'data_admissao' => ['required', 'date'],
             ]);
             $this->employeeData;
-            $data = $this->employeeData::from($request->all());
+            $data = $this->employeeData::from($request->all())->all();
             $this->employeeService->save($data);
             return redirect()->route('admin.employees.index')->with('success', 'Funcionário cadastrado com sucesso.');
         } catch (\Throwable $th) {
