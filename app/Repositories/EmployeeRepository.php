@@ -27,4 +27,9 @@ class EmployeeRepository implements EmployeeRepositoryInterface
             ->select('employees.id','employees.nome', 'employees.cargo', 'employees.status')
             ->get();
     }
+
+    public function persist(array $data): Employee
+    {
+        return $this->employee::create($data);
+    }
 }

@@ -9,4 +9,5 @@ interface EmployeeRepositoryInterface
     public function searchTypeIdByIdUser(string $id);
     public function getDataEmployeeOrderByName();
     public function getAll();
+    public function persist(array $data);
 }

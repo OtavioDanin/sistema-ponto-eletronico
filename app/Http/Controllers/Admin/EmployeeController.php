@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DTO\EmployeeDTO;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\User;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TypeEmployeeServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -21,6 +19,7 @@ class EmployeeController extends Controller
     public function __construct(
         protected EmployeeServiceInterface $employeeService,
         protected TypeEmployeeServiceInterface $typeEmployeeService,
+        protected EmployeeDTO $employeeData,
     ) {}
 
     public function index()
@@ -41,18 +40,14 @@ class EmployeeController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         try {
-
             $request->validate([
                 'nome' => ['required', 'string', 'max:100'],
                 'cpf' => ['required', 'string', 'digits:11', 'unique:employees'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'confirmed'],
+                'senha' => ['required', 'confirmed'],
                 'type_id' => ['required', 'exists:type_employees,id'],
                 'cargo' => ['required', 'string', 'max:255'],
                 'cep' => ['nullable', 'string', 'digits:8'],
@@ -60,36 +55,9 @@ class EmployeeController extends Controller
                 'data_nascimento' => ['required', 'date'],
                 'data_admissao' => ['required', 'date'],
             ]);
-
-            DB::transaction(function () use ($request) {
-                // Cria o User para login
-                $user = User::create([
-                    'name' => $request->nome,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]);
-
-                $adminEmployee = Auth::user()->employees;
-                // dd($adminEmployee->toArray());
-                $admin = $adminEmployee->toArray()[0];
-                // Cria o Employee associado
-                Employee::create([
-                    'unique_employee' => Str::uuid(),
-                    'user_id' => $user->id,
-                    'type_id' => $request->type_id,
-                    'created_by' => $admin['id'],
-                    'nome' => $request->nome,
-                    'cpf' => $request->cpf,
-                    'email' => $request->email,
-                    'senha' => Hash::make($request->senha),
-                    'cargo' => $request->cargo,
-                    'cep' => $request->cep,
-                    'endereco' => $request->endereco,
-                    'data_nascimento' => $request->data_nascimento,
-                    'data_admissao' => $request->data_admissao,
-                ]);
-            });
-
+            $this->employeeData;
+            $data = $this->employeeData::from($request->all());
+            $this->employeeService->save($data);
             return redirect()->route('admin.employees.index')->with('success', 'Funcionário cadastrado com sucesso.');
         } catch (\Throwable $th) {
             dd($th->getMessage());

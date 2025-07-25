@@ -12,6 +12,8 @@ use App\Repositories\TimeRecordRepository;
 use App\Repositories\TimeRecordRepositoryInterface;
 use App\Repositories\TypeEmployeeRepository;
 use App\Repositories\TypeEmployeeRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
 use App\Services\EmployeeService;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TimeRecordService;
@@ -38,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(TypeEmployeeRepositoryInterface::class, TypeEmployeeRepository::class);
         $this->app->bind(TypeEmployeeServiceInterface::class, TypeEmployeeService::class);
+
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**

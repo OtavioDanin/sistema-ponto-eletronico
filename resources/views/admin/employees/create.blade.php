@@ -86,16 +86,16 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                             <div>
-                                <x-input-label for="password" :value="__('Senha')" />
-                                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password"
-                                    required autocomplete="new-password" />
-                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                                <x-input-label for="senha" :value="__('Senha')" />
+                                <x-text-input id="senha" class="block mt-1 w-full" type="password" name="senha"
+                                    required autocomplete="new-senha" />
+                                <x-input-error :messages="$errors->get('senha')" class="mt-2" />
                             </div>
                             <div>
-                                <x-input-label for="password_confirmation" :value="__('Confirmar Senha')" />
-                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                                    name="password_confirmation" required autocomplete="new-password" />
-                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                                <x-input-label for="senha_confirmation" :value="__('Confirmar Senha')" />
+                                <x-text-input id="senha_confirmation" class="block mt-1 w-full" type="password"
+                                    name="senha_confirmation" required autocomplete="new-senha" />
+                                <x-input-error :messages="$errors->get('senha_confirmation')" class="mt-2" />
                             </div>
                         </div>
 

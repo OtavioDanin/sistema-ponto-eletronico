@@ -5,12 +5,23 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Exceptions\EmployeeException;
+use App\Helpers\AuthUserInterface;
+use App\Helpers\UniqueIdentifierInterface;
 use App\Repositories\EmployeeRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class EmployeeService implements EmployeeServiceInterface
 {
-    public function __construct(protected EmployeeRepositoryInterface $employeeRepository) {}
+    public function __construct(
+        protected EmployeeRepositoryInterface $employeeRepository,
+        protected UserRepositoryInterface $userRepository,
+        protected UniqueIdentifierInterface $unique,
+        protected AuthUserInterface $auth,
+    ) {}
 
     public function getDataEmployeeIdByIdUser(string $idUser): array
     {
@@ -32,5 +43,25 @@ class EmployeeService implements EmployeeServiceInterface
     public function getAll(): Collection
     {
         return $this->employeeRepository->getAll();
+    }
+
+    public function save(object $data)
+    {
+        if (empty($data)) {
+            throw new EmployeeException('Dados vazios para cadsatro!', 400);
+        }
+        DB::transaction(function () use ($data) {
+            $dataUser = [
+                'name' => $data->nome,
+                'email' => $data->email,
+                'password' => Hash::make($data->senha),
+            ];
+            $user = $this->userRepository->persist($dataUser);
+            // dd($user->id);
+            $data->user_id = $user->id;
+            $data->created_by = $this->auth->getIdUser();
+            $data->unique_employee = $this->unique->generate();
+            $this->employeeRepository->persist((array)$data);
+        });
     }
 }
