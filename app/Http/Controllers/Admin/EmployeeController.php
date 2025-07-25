@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use App\Models\TypeEmployee;
 use App\Models\User;
 use App\Services\EmployeeServiceInterface;
+use App\Services\TypeEmployeeServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +18,10 @@ use Throwable;
 class EmployeeController extends Controller
 {
 
-    public function __construct(protected EmployeeServiceInterface $employeeService) {}
+    public function __construct(
+        protected EmployeeServiceInterface $employeeService,
+        protected TypeEmployeeServiceInterface $typeEmployeeService,
+    ) {}
 
     public function index()
     {
@@ -31,8 +34,11 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $types = TypeEmployee::all();
-        return view('admin.employees.create', compact('types'));
+        try {
+            $types = $this->typeEmployeeService->getAll();
+            return view('admin.employees.create', compact('types'));
+        } catch (Throwable $thEx) {
+        }
     }
 
     /**

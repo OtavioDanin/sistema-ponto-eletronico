@@ -10,10 +10,14 @@ use App\Repositories\EmployeeRepository;
 use App\Repositories\EmployeeRepositoryInterface;
 use App\Repositories\TimeRecordRepository;
 use App\Repositories\TimeRecordRepositoryInterface;
+use App\Repositories\TypeEmployeeRepository;
+use App\Repositories\TypeEmployeeRepositoryInterface;
 use App\Services\EmployeeService;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TimeRecordService;
 use App\Services\TimeRecordServiceInterface;
+use App\Services\TypeEmployeeService;
+use App\Services\TypeEmployeeServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(EmployeeServiceInterface::class, EmployeeService::class);
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
+
+        $this->app->bind(TypeEmployeeRepositoryInterface::class, TypeEmployeeRepository::class);
+        $this->app->bind(TypeEmployeeServiceInterface::class, TypeEmployeeService::class);
     }
 
     /**
