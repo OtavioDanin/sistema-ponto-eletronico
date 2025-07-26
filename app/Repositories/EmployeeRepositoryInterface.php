@@ -10,4 +10,5 @@ interface EmployeeRepositoryInterface
     public function getDataEmployeeOrderByName();
     public function getAll();
     public function persist(array $data);
+    public function findById(string $id);
 }

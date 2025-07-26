@@ -64,17 +64,33 @@ class EmployeeController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $employee = Employee::with(['types'])->where("id", $id)->get();
-        $createBy = $employee->toArray()[0]['created_by'];
-        $user = User::select('name')->where('id', $createBy)->get();
-        $employee = (object)$employee->toArray()[0];
-        $nameCreator = $user->toArray()[0];
-        return view('admin.employees.show', compact('employee', 'nameCreator'));
+        try {
+            $columns = [
+                'employees.nome AS nomeFuncionario',
+                'created_by',
+                'status',
+                'email',
+                'cpf',
+                'cargo',
+                'cep',
+                'endereco',
+                'type_employees.nome AS nomeTipoFuncionario',
+                'data_admissao',
+                'data_nascimento',
+                'employees.created_at'
+            ];
+            $employee = $this->employeeService->getById($id, $columns);
+            $employee = (object)$employee->toArray()[0];
+
+            $createBy = $employee->toArray()[0]['created_by'];
+            $employeeCreator = $this->employeeService->getById($createBy, ['employees.nome AS name']);
+            $nameCreator = $employeeCreator->toArray()[0];
+            return view('admin.employees.show', compact('employee', 'nameCreator'));
+        } catch (Throwable $thEx) {
+            dd($thEx->getMessage());
+        }
     }
 
     /**

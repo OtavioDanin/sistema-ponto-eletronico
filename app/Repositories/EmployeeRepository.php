@@ -24,12 +24,21 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function getAll(): Collection
     {
         return $this->employee
-            ->select('employees.id','employees.nome', 'employees.cargo', 'employees.status')
+            ->select('employees.id', 'employees.nome', 'employees.cargo', 'employees.status')
             ->get();
     }
 
     public function persist(array $data): Employee
     {
         return $this->employee::create($data);
+    }
+
+    public function findById(string $id, array $columns = ['*']): Collection
+    {
+        return $this->employee
+            ->select($columns)
+            ->join('type_employees', 'employees.type_id', '=', 'type_employees.id')
+            ->where('employees.id', $id)
+            ->get();
     }
 }
