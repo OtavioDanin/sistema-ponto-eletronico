@@ -63,8 +63,33 @@ class EmployeeService implements EmployeeServiceInterface
         });
     }
 
-    public function getById(string $id, array $columns = ['*']): Collection
+    public function getById(string $id): array
     {
-        return $this->employeeRepository->findById($id, $columns);
+        $employee = $this->employeeRepository->findById($id);
+        return $employee->toArray();
+    }
+
+    public function update(string $id, array $data): void
+    {
+        DB::transaction(function () use ($id, $data) {
+            $this->updateEmployee($id, $data);
+            $this->updateUser($this->getDataEmployee($id));
+        });
+    }
+
+    private function updateEmployee(string $id, array $data): void
+    {
+        $this->employeeRepository->update($id, $data);
+    }
+
+    private function getDataEmployee(string $id): array
+    {
+        $employee = $this->employeeRepository->findById($id);
+        return $employee->toArray();
+    }
+
+    private function updateUser(array $employeeData): void
+    {
+        $this->userRepository->update($employeeData['user_id'], ['name' => $employeeData['nome'], 'email' => $employeeData['email']]);
     }
 }

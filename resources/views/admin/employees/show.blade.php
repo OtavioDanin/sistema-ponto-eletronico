@@ -23,7 +23,7 @@
 
                          <div class="p-3 bg-gray-50 rounded-lg">
                             <dt class="text-sm font-medium text-gray-500">Gestor</dt>
-                            <dd class="mt-1 text-lg text-gray-900">{{ $nameCreator['name'] ?? 'N/A' }}</dd>
+                            <dd class="mt-1 text-lg text-gray-900">{{ $employeeCreator['nome'] ?? 'N/A' }}</dd>
                         </div>
 
                     </dl>
@@ -42,7 +42,7 @@
 
                         <div class="p-3 bg-gray-50 rounded-lg">
                             <dt class="text-sm font-medium text-gray-500">Nome Completo</dt>
-                            <dd class="mt-1 text-lg text-gray-900">{{ $employee->nomeFuncionario }}</dd>
+                            <dd class="mt-1 text-lg text-gray-900">{{ $employee->nome }}</dd>
                         </div>
 
                         <div class="p-3 bg-gray-50 rounded-lg">
@@ -81,7 +81,7 @@
 
                         <div class="p-3 bg-gray-50 rounded-lg">
                             <dt class="text-sm font-medium text-gray-500">Tipo de Conta</dt>
-                            <dd class="mt-1 text-lg text-gray-900">{{ $employee->nomeTipoFuncionario }}</dd>
+                            <dd class="mt-1 text-lg text-gray-900">{{ $typeEmployee->name ?? 'Não Informado' }}</dd>
                         </div>
 
                         <div class="p-3 bg-gray-50 rounded-lg">

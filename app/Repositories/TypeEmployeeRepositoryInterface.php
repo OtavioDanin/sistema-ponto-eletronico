@@ -7,4 +7,5 @@ namespace App\Repositories;
 interface TypeEmployeeRepositoryInterface
 {
     public function getAll();
+    public function getById(string $id);
 }

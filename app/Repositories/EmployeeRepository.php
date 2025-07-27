@@ -33,12 +33,17 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return $this->employee::create($data);
     }
 
-    public function findById(string $id, array $columns = ['*']): Collection
+    public function findById(string $id): Employee
     {
         return $this->employee
-            ->select($columns)
-            ->join('type_employees', 'employees.type_id', '=', 'type_employees.id')
-            ->where('employees.id', $id)
-            ->get();
+            ->select()
+            ->where('id', $id)
+            ->first();
+    }
+
+    public function update(string $id, array $data): bool
+    {
+        $employee = $this->findById($id);
+        return $employee->updateOrFail($data);
     }
 }

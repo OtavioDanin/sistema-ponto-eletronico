@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\DTO\EmployeeDTO;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use App\Models\User;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TypeEmployeeServiceInterface;
 use Illuminate\Http\Request;
@@ -55,7 +54,6 @@ class EmployeeController extends Controller
                 'data_nascimento' => ['required', 'date'],
                 'data_admissao' => ['required', 'date'],
             ]);
-            $this->employeeData;
             $data = $this->employeeData::from($request->all())->all();
             $this->employeeService->save($data);
             return redirect()->route('admin.employees.index')->with('success', 'Funcionário cadastrado com sucesso.');
@@ -64,53 +62,31 @@ class EmployeeController extends Controller
         }
     }
 
-    public function show(string $id)
+    public function show(int $id)
     {
         try {
-            $columns = [
-                'employees.nome AS nomeFuncionario',
-                'created_by',
-                'status',
-                'email',
-                'cpf',
-                'cargo',
-                'cep',
-                'endereco',
-                'type_employees.nome AS nomeTipoFuncionario',
-                'data_admissao',
-                'data_nascimento',
-                'employees.created_at'
-            ];
-            $employee = $this->employeeService->getById($id, $columns);
-            $employee = (object)$employee->toArray()[0];
-
-            $createBy = $employee->toArray()[0]['created_by'];
-            $employeeCreator = $this->employeeService->getById($createBy, ['employees.nome AS name']);
-            $nameCreator = $employeeCreator->toArray()[0];
-            return view('admin.employees.show', compact('employee', 'nameCreator'));
+            $employee = $this->employeeService->getById($id);
+            $employeeCreator = $this->employeeService->getByIdWithTypeEmployees($employee['created_by'], ['employees.nome']);
+            $employee = (object)$employee;
+            $typeEmployee = $this->typeEmployeeService->getById($employee->type_id);
+            return view('admin.employees.show', compact('employee', 'employeeCreator', 'typeEmployee'));
         } catch (Throwable $thEx) {
             dd($thEx->getMessage());
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $employee = Employee::with(['types'])->where("id", $id)->get();
-        $employee = (object)$employee->toArray()[0];
-        // dd($employee);
-        // $types = TypeEmployee::all();
-        return view('admin.employees.edit', compact('employee'));
+        try {
+            $employee = $this->employeeService->getById($id);
+            $typeEmployee = $this->typeEmployeeService->getById($employee['type_id']);
+            return view('admin.employees.edit', compact('employee', 'typeEmployee'));
+        } catch (Throwable $thEX) {
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, string $id)
     {
-        // Validação para a atualização
         $request->validate([
             'nome' => ['required', 'string', 'max:100'],
             'cpf' => ['required', 'string', 'digits:11'],
@@ -122,41 +98,15 @@ class EmployeeController extends Controller
             'data_admissao' => ['required', 'date', Rule::date()->format('Y-m-d')],
             'cep' => ['nullable', 'string', 'digits:8'],
             'endereco' => ['nullable', 'string', 'max:255'],
-            // A senha é opcional, mas se for preenchida, deve ser confirmada
-            // 'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
-        // dd($request->all());
         try {
-            DB::transaction(function () use ($request, $employee) {
-
-                // 2. Atualiza os dados do usuário associado
-                $user = $employee->users;
-                // dd($user);
-                $user->name = $request->nome;
-                $user->email = $request->email;
-
-                $user->save();
-                // 1. Atualiza os dados do funcionário
-                // dd($employee);
-                $employee->update([
-                    'nome' => $request->nome,
-                    'cpf' => $request->cpf,
-                    'email' => $request->email,
-                    'cargo' => $request->cargo,
-                    'type_id' => $request->type_id,
-                    'status' => $request->status,
-                    'data_nascimento' => $request->data_nascimento,
-                    'data_admissao' => $request->data_admissao,
-                    'cep' => $request->cep,
-                    'endereco' => $request->endereco,
-                ]);
-            });
-        } catch (\Exception $e) {
-            // Em caso de erro, volta para a página de edição com uma mensagem de erro
-            return back()->with('error', 'Ocorreu um erro ao atualizar o funcionário: ' . $e->getMessage());
+            $data = $this->employeeData::from($request->all());
+            $dataToUpdate = $data->except('unique_employee', 'user_id', 'created_by', 'senha')->toArray();
+            $this->employeeService->update($id, $dataToUpdate);
+            return redirect()->route('admin.employees.index')->with('success', 'Funcionário atualizado com sucesso.');
+        } catch (Throwable $thEx) {
+            return back()->with('error', 'Ocorreu um erro ao atualizar o funcionário: ' . $thEx->getMessage());
         }
-
-        return redirect()->route('admin.employees.index')->with('success', 'Funcionário atualizado com sucesso.');
     }
 
     /**

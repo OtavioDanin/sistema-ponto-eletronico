@@ -11,4 +11,5 @@ interface EmployeeRepositoryInterface
     public function getAll();
     public function persist(array $data);
     public function findById(string $id);
+    public function update(string $id, array $data);
 }

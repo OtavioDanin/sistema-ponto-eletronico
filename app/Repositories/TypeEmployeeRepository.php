@@ -17,4 +17,12 @@ class TypeEmployeeRepository implements TypeEmployeeRepositoryInterface
             ->select('id', 'nome')
             ->get();
     }
+
+    public function getById(string $id): TypeEmployee
+    {
+        return $this->typeEmployee
+            ->select('id', 'nome')
+            ->where('id', $id)
+            ->first();
+    }
 }

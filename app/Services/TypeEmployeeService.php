@@ -15,4 +15,11 @@ class TypeEmployeeService implements TypeEmployeeServiceInterface
     {
         return $this->typeEmployeeService->getAll();
     }
+
+    public function getById(string $id): array
+    {
+        $typeEmployee = $this->typeEmployeeService->getById($id);
+        return $typeEmployee->toArray();
+
+    }
 }

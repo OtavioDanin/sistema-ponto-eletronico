@@ -30,10 +30,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AuthUserInterface::class, AuthUser::class);
+        $this->app->bind(UniqueIdentifierInterface::class, UniqueIdentifier::class);
 
         $this->app->bind(TimeRecordRepositoryInterface::class, TimeRecordRepository::class);
         $this->app->bind(TimeRecordServiceInterface::class, TimeRecordService::class);
-        $this->app->bind(UniqueIdentifierInterface::class, UniqueIdentifier::class);
 
         $this->app->bind(EmployeeServiceInterface::class, EmployeeService::class);
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
