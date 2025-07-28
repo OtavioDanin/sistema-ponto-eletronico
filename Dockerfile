@@ -25,13 +25,17 @@ RUN apk add --no-cache \
 
 RUN { \
     echo 'opcache.enable=1'; \
+    echo 'opcache.enable_cli=1'; \
+    echo 'opcache.jit_buffer_size=256M'; \ 
     echo 'opcache.revalidate_freq=0'; \
     echo 'opcache.validate_timestamps=0'; \
-    echo 'opcache.max_accelerated_files=10000'; \
-    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.max_accelerated_files=20000'; \
+    echo 'opcache.memory_consumption=256'; \
     echo 'opcache.max_wasted_percentage=10'; \
     echo 'opcache.interned_strings_buffer=16'; \
     echo 'opcache.use_cwd=0'; \
+    echo 'opcache.preload=/var/www/html/preload.php'; \
+    echo 'opcache.preload_user=www-data'; \
 } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN { \
@@ -47,13 +51,13 @@ COPY default.conf /etc/nginx/http.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY ./ /var/www/html
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/storage/framework/views/ /var/www/html/storage/logs/ /var/www/html/storage/framework/sessions/
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/storage/framework/views/ /var/www/html/storage/logs/ /var/www/html/storage/framework/sessions/
 
 RUN mkdir -p /run/php/
 RUN touch /run/php/php-fpm.pid
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer 
 
 WORKDIR /var/www/html
 
