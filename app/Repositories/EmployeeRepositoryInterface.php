@@ -12,4 +12,6 @@ interface EmployeeRepositoryInterface
     public function persist(array $data);
     public function findById(string $id);
     public function update(string $id, array $data);
+    public function delete(string $id);
+    public function findByCreatedBy(string $id);
 }

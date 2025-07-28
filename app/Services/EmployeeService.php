@@ -77,6 +77,28 @@ class EmployeeService implements EmployeeServiceInterface
         });
     }
 
+    public function delete(string $id): void
+    {
+        $this->checkRulesToDelete($id);
+        DB::transaction(function () use ($id) {
+            $employee = $this->employeeRepository->delete($id);
+            $employeeData = $employee->toArray();
+            $this->userRepository->delete($employeeData['user_id']);
+        });
+    }
+
+    public function checkRulesToDelete(string $id): bool
+    {
+        $employeeyCreatedBy = $this->employeeRepository->findByCreatedBy($id);
+        if (isset($employeeyCreatedBy)) {
+            throw new EmployeeException('Não é permitido remover funcionário com dependentes');
+        }
+        if ($this->auth->checkIfUserSessionIsEmployeeCurrent($id)) {
+            throw new EmployeeException('Não é permitido se auto-remover');
+        }
+        return true;
+    }
+
     private function updateEmployee(string $id, array $data): void
     {
         $this->employeeRepository->update($id, $data);

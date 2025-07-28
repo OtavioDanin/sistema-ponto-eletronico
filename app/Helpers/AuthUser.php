@@ -24,4 +24,9 @@ class AuthUser implements AuthUserInterface
         $user = Auth::user();
         return $user->getAuthIdentifier();
     }
+
+    public function checkIfUserSessionIsEmployeeCurrent(string $idEmployee): bool
+    {
+        return $idEmployee === Auth::user()?->employees?->toArray()[0]['id'];
+    }
 }

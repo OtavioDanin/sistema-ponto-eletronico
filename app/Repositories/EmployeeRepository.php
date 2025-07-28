@@ -33,7 +33,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return $this->employee::create($data);
     }
 
-    public function findById(string $id): Employee
+    public function findById(string $id): ?Employee
     {
         return $this->employee
             ->select()
@@ -45,5 +45,20 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     {
         $employee = $this->findById($id);
         return $employee->updateOrFail($data);
+    }
+
+    public function delete(string $id): Employee
+    {
+        $employee = $this->findById($id);
+        $employee->deleteOrFail();
+        return $employee;
+    }
+
+    public function findByCreatedBy(string $id): ?Employee
+    {
+        return $this->employee
+            ->select()
+            ->where('created_by', $id)
+            ->first();
     }
 }

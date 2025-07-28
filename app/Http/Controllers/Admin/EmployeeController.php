@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\DTO\EmployeeDTO;
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
 use App\Services\EmployeeServiceInterface;
 use App\Services\TypeEmployeeServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -66,7 +64,7 @@ class EmployeeController extends Controller
     {
         try {
             $employee = $this->employeeService->getById($id);
-            $employeeCreator = $this->employeeService->getByIdWithTypeEmployees($employee['created_by'], ['employees.nome']);
+            $employeeCreator = $this->employeeService->getById($employee['created_by']);
             $employee = (object)$employee;
             $typeEmployee = $this->typeEmployeeService->getById($employee->type_id);
             return view('admin.employees.show', compact('employee', 'employeeCreator', 'typeEmployee'));
@@ -109,29 +107,13 @@ class EmployeeController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Employee $employee)
+    public function destroy(string $id)
     {
-        // Para evitar que um admin se auto-delete ou delete o admin principal
-        // if ($employee->id === 1 || $employee->id === Auth::user()->employee->id) {
-        //     return redirect()->route('admin.employees.index')->with('error', 'Você não pode remover este usuário.');
-        // }
-
         try {
-            DB::transaction(function () use ($employee) {
-                // O usuário associado será deletado em cascata por causa da foreign key no banco de dados
-                // onDelete('cascade') na migration da tabela `employees`.
-                // Se não tivesse a cascata, faríamos: $employee->user()->delete();
-                // $employee->delete();
-                $employee->users->delete(); // Isso deve acionar onDelete('cascade') nos registros de ponto.
-                $employee->delete();
-            });
-        } catch (\Exception $e) {
+            $this->employeeService->delete($id);
+            return redirect()->route('admin.employees.index')->with('success', 'Funcionário removido com sucesso.');
+        } catch (Throwable $thEx) {
             return redirect()->route('admin.employees.index')->with('error', 'Ocorreu um erro ao remover o funcionário.');
         }
-
-        return redirect()->route('admin.employees.index')->with('success', 'Funcionário removido com sucesso.');
     }
 }

@@ -28,4 +28,10 @@ class UserRepository implements UserRepositoryInterface
         $user = $this->getById($id);
         return $user->updateOrFail($data);
     }
+
+    public function delete(int $id): ?bool
+    {
+        $user = $this->getById($id);
+        return $user->deleteOrFail();
+    }
 }
