@@ -32,6 +32,10 @@ class TimeRecordController extends Controller
             $employees = $this->employeeService->getDataEmployeeOrderByName();
             return view('admin.time_records.index', compact('timeRecords', 'employees'));
         } catch (Throwable $thEx) {
+            $timeRecords = [];
+            $employees = [];
+            $error = ['mensagem' => 'Falha ao buscar registros!'];
+            return view('admin.time_records.index', compact('timeRecords', 'employees', 'error'));
         }
     }
 

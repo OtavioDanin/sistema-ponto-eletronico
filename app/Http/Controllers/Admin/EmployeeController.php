@@ -12,7 +12,6 @@ use Throwable;
 
 class EmployeeController extends Controller
 {
-
     public function __construct(
         protected EmployeeServiceInterface $employeeService,
         protected TypeEmployeeServiceInterface $typeEmployeeService,

@@ -27,6 +27,6 @@ class TimeRecordRepository implements TimeRecordRepositoryInterface
 
     public function getTimeRecordEmployee(): Builder
     {
-        return $this->timeRecord::with('employee')->latest('recorded_at');
+        return $this->timeRecord::with('employee:id,nome')->select('employee_id','recorded_at')->latest('recorded_at');
     }
 }
